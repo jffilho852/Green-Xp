@@ -4,7 +4,7 @@ const router = express.Router() // Cria um novo roteador express
 
 router.get('/test-db', (req, res) => {
     console.log("TESTE RODANDO NO DB")
-    db.all('SELECT * FROM users', [], (err, rows) => {
+    db.all('SELECT * FROM usuarios', [], (err, rows) => {
       if (err) {
         console.error(err.message);
         return res.status(500).json({ error: 'Erro ao acessar o banco' });
@@ -17,15 +17,15 @@ router.get('/test-db', (req, res) => {
 
 router.post("/register", (req, res) => {
     // Pega os dados de Email e senha do Corpo (req)
-const { email, password } = req.body
+const {nome, email, password } = req.body
 
 // Verifca se o usuário preencheu os Campos
-if (!email || !password) {
-    return res.status(400).json({ error: "Email e senha são obrigatórios" })
+if (!email || !password  || !nome) {
+    return res.status(400).json({ error: " Nome, Email e senha são obrigatórios" })
 }
 
 //  Verifica se o usuário já cadastro com o mesmo email
-db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+db.get("SELECT * FROM usuarios WHERE email = ?", [email], (err, row) => {
     if (err) {
         // Erro no banco , retornar erro 500
         return res.status(500).json({ error: "Erro ao acessar o banco de dados" })
@@ -38,8 +38,8 @@ db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
 
     // Caso o usuário não exista, cria o cadastro do novo usuário
     db.run(
-        "INSERT INTO users (email, password) VALUES (?, ?)",
-        [email, password], // Passando Email e Password por Parâmetro, mais segurança
+        "INSERT INTO usuarios (nome, email, password) VALUES (?, ?, ?)",
+        [nome, email, password], // Passando Email e Password por Parâmetro, mais segurança
         function (err) {
             if (err) { // Retornar erro, se der erro
                 console.error("Erro no INSERT:", err.message)
@@ -64,7 +64,7 @@ if (!email || !password) {
 }
 
 // Busca usuário no banco através do Email informado
-db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+db.get("SELECT * FROM usuarios WHERE email = ?", [email], (err, row) => {
     if (err) {
         //Erro na consulta , retornar erro 500
         return res.status(500).json({ error: "Erro ao acessar o banco de dados" })
@@ -79,7 +79,14 @@ db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
     }
 
     // Usuário conseguiu fazer Login , retorna 200 e mensagem de sucesso
-    res.status(200).json({ message: "Login efetuado com sucesso" })
+    res.status(200).json({ message: "Login efetuado com sucesso",
+                           usuario: {
+                            id:row.id_usuario,
+                            nome: row.nome,
+                            pontos: row.pontos,
+                            is_admin: row.is_admin
+         }
+     })
 })
 })
 
