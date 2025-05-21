@@ -8,7 +8,7 @@ const db = require ('../db.js')
 
 //Rota para Registrar Descarte e atualizar os pontos
 
-routerDescartes.post('/descartar', (req, res)=>{
+routerDescartes.post('api/descartar', (req, res)=>{
     const {id_usuario, id_lixeira, tipo_residuo, quantidade } = req.body
     
     //Validação de Dados
