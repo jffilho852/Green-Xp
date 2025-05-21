@@ -1,5 +1,7 @@
 {
   "expo": {
+    "jsEngine": "hermes",
+    "sdkVersion": "53.0.0",         
     "name": "App",
     "slug": "App",
     "version": "1.0.0",

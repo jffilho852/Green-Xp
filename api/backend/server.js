@@ -10,7 +10,7 @@ const app = express() // Cria uma instância do servidor Express
 
 app.use(cors()) // Ativa o CORS para permitir chamadas de outros domínios
 app.use(express.json()) // Permite que o servidor entenda dados no no formato de JSON
-app.use("/api", userRoutes) 
+app.use("/api/usuarios", userRoutes) 
 app.use("/api/leitura", leiturasRoutes)
 app.use("/api/descartes", descarteRoutes)// Define que as rotas do arquivo users.js vão responder no caminho "/api"
 app.use('/api/admin', adminRoutes)
