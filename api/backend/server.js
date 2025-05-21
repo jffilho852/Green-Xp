@@ -3,6 +3,7 @@ const cors = require("cors") // Importa o CORS para permitir requisições de ou
 const userRoutes = require("./Routes/usuarios") // Importa as rotas que estão no arquivo users.js
 const leiturasRoutes = require('./Routes/leitura_qr_cod')
 const descarteRoutes = require('./Routes/descartes')
+const adminRoutes = require ('./Routes/admin')
 
 const app = express() // Cria uma instância do servidor Express
 
@@ -12,6 +13,7 @@ app.use(express.json()) // Permite que o servidor entenda dados no no formato de
 app.use("/api", userRoutes) 
 app.use("/api/leitura", leiturasRoutes)
 app.use("/api/descartes", descarteRoutes)// Define que as rotas do arquivo users.js vão responder no caminho "/api"
+app.use('/api/admin', adminRoutes)
 
 
 //

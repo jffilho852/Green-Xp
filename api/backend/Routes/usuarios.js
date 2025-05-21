@@ -3,15 +3,16 @@ const db = require("../db.js") // Importa o banco de Dados slqite configurando o
 const router = express.Router() // Cria um novo roteador express
 
 router.get('/test-db', (req, res) => {
-    console.log("TESTE RODANDO NO DB")
-    db.all('SELECT * FROM usuarios', [], (err, rows) => {
-      if (err) {
-        console.error(err.message);
-        return res.status(500).json({ error: 'Erro ao acessar o banco' });
-      }
-      res.json(rows);
-    });
+
+  const query = 'SELECT id, nome, email, tipo FROM usuarios';
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao buscar usuários' });
+    }
+    res.json(rows);
   });
+});
   
 // Rota para criar o Registro(Cadastro) do Usuário
 
