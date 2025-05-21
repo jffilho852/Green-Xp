@@ -16,31 +16,42 @@ export default function SignupScreen({ navigation }) {
   const [senha, setSenha] = useState('');
 
   const handleSignup = async () => {
+    if (!nome || !email || !senha) {
+      alert('Preencha todos os campos!');
+      return;
+    }
+
     try {
-      const response = await fetch('http://192.168.0.16:3000/register', {
+      const response = await fetch('http://192.168.141.14:3000/api/usuarios/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password: senha }), // 'senha' vem do input
+        body: JSON.stringify({ nome, email, password: senha }),
       });
-  
-      const data = await response.json();
-  
+
+      const text = await response.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error('Resposta inesperada:', text);
+        alert('Erro inesperado no servidor.');
+        return;
+      }
+
       if (response.ok) {
         alert(data.message || 'Cadastro feito com sucesso!');
         navigation.navigate('Login');
       } else {
-        alert(data.error || 'Erro ao cadastrar');
+        alert(data.error || 'Erro ao cadastrar.');
       }
     } catch (error) {
-      console.error(error);
-      alert('Erro de conexão com o servidor');
+      console.error('Erro de rede:', error);
+      alert('Erro de conexão com o servidor.');
     }
   };
-  
-    
-    
 
   return (
     <KeyboardAvoidingView
@@ -62,6 +73,8 @@ export default function SignupScreen({ navigation }) {
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
+          textContentType="emailAddress"
         />
         <TextInput
           style={styles.input}
@@ -69,6 +82,7 @@ export default function SignupScreen({ navigation }) {
           value={senha}
           onChangeText={setSenha}
           secureTextEntry
+          textContentType="password"
         />
 
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
