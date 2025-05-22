@@ -2,7 +2,6 @@ const express = require("express");
 const db = require("../db.js");
 const router = express.Router();
 
-<<<<<<< HEAD
 // Teste de conexão com o DB
 router.get("/test-db", (req, res) => {
   console.log("TESTE RODANDO NO DB");
@@ -10,24 +9,10 @@ router.get("/test-db", (req, res) => {
     if (err) {
       console.error(err.message);
       return res.status(500).json({ error: "Erro ao acessar o banco" });
-=======
-router.get('/test-db', (req, res) => {
-
-  const query = 'SELECT id, nome, email, tipo FROM usuarios';
-
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      return res.status(500).json({ erro: 'Erro ao buscar usuários' });
->>>>>>> main
     }
     res.json(rows);
   });
 });
-<<<<<<< HEAD
-=======
-  
-// Rota para criar o Registro(Cadastro) do Usuário
->>>>>>> main
 
 // Rota de cadastro
 router.post("/register", (req, res) => {
@@ -111,5 +96,33 @@ router.post("/login", (req, res) => {
     }
   );
 });
+
+// Rota para redefinir senha
+
+router.put("/resetar", (req, res)=>{
+    const {email, novaSenha} = req.body
+
+    if(!email || !novaSenha){
+        return res.status(400).json({error: "Email e nova senha são obrigatório"})
+    }
+
+    db.get("SELECT * FROM usuarios WHERE email = ?", [email], (err, row)=>{
+        if (err){
+            return res.status(500).json({error: "Erro ao acessar o Banco de Dados"})
+        }
+        if(!row){
+            return res.status(404).json({error: "Usuário não encontrado"})
+        }
+
+        db.run("UPDATE usuarios SET password = ? WHERE email = ?", [novaSenha, email], (err)=>{
+        if(err){
+            return res.status(500).json({error: "Erro ao atualizar senha"})
+        }
+
+        return res.status(200).json({message: "Senha redefinida com sucesso!!"})
+
+        })   
+    })
+})
 
 module.exports = router;
